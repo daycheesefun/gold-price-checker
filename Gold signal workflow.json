@@ -1,0 +1,259 @@
+{
+  "name": "Gold signal",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10-20 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1312,
+        96
+      ],
+      "id": "5097454f-723e-4e4d-abc0-ae4041875baa",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://query1.finance.yahoo.com/v8/finance/chart/GC%3DF",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1040,
+        96
+      ],
+      "id": "c8d32021-a665-4861-aa70-f4a71469aa71",
+      "name": "获取黄金价格"
+    },
+    {
+      "parameters": {
+        "url": "https://query1.finance.yahoo.com/v8/finance/chart/BZ%3DF",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -624,
+        96
+      ],
+      "id": "757c077a-5cfd-4352-8622-a9ea51b588a4",
+      "name": "获取原油价格"
+    },
+    {
+      "parameters": {
+        "url": "https://query1.finance.yahoo.com/v8/finance/chart/DX-Y.NYB",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -832,
+        96
+      ],
+      "id": "0bb48a7b-372a-40c9-b737-c5246f2d5f89",
+      "name": "获取美元指数"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "22e25eba-0ae9-416a-a406-265889ebbb3c",
+              "leftValue": "={{ $json.gold_price }}",
+              "rightValue": 5000,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            },
+            {
+              "id": "f955ccf1-a355-4dea-9749-e6b372febffb",
+              "leftValue": "={{ $json.dxy }}",
+              "rightValue": 100,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            },
+            {
+              "id": "123c2b94-5c6d-4bc3-aea0-4daa2b956426",
+              "leftValue": "={{ $json.oil_price }}",
+              "rightValue": 70,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -208,
+        96
+      ],
+      "id": "86193461-0041-4b25-92c8-f1409746ee12",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "subject": "gold buy signal",
+        "emailFormat": "text",
+        "text": "=text\n买入条件已满足！\n\n当前市场数据：\n- 黄金价格：{{ $node['Set'].json.gold_price }} 美元/盎司\n- 美元指数：{{ $node['Set'].json.dxy }}\n- 原油价格：{{ $node['Set'].json.oil_price }} 美元/桶\n- 时间：{{ $node['Set'].json.timestamp }}\n\n请登录交易软件查看。",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2109bc99-cfde-4eca-a00d-a90c1a3b0ad5",
+      "name": "Send an Email",
+      "webhookId": "63b9fc98-7741-44b8-8704-669618c997c0"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f512cc99-70a7-4155-9fd6-76ff99b650dc",
+              "name": "gold_price",
+              "value": "={{ $node['获取黄金价格'].json.chart.result[0].meta.regularMarketPrice }}",
+              "type": "string"
+            },
+            {
+              "id": "424169f0-326a-4643-943c-58656f076de7",
+              "name": "dxy",
+              "value": "={{ $node['获取美元指数'].json.chart.result[0].meta.regularMarketPrice }}",
+              "type": "string"
+            },
+            {
+              "id": "0897cee6-7b4f-4738-97b7-5775a00c116d",
+              "name": "oil_price",
+              "value": "={{ $node['获取原油价格'].json.chart.result[0].meta.regularMarketPrice }}",
+              "type": "string"
+            },
+            {
+              "id": "26b8a255-6dd5-4843-b1d9-b7a7d268bad0",
+              "name": "timestamp",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -416,
+        96
+      ],
+      "id": "d35bd074-065b-4b34-8f65-09c5f5db6c74",
+      "name": "Set"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "获取黄金价格",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "获取黄金价格": {
+      "main": [
+        [
+          {
+            "node": "获取美元指数",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "获取原油价格": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "获取美元指数": {
+      "main": [
+        [
+          {
+            "node": "获取原油价格",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c1d1f19b-14a1-4c7a-80ad-80c386a800f4",
+  "meta": {
+    "instanceId": "3dcad30d90f41a2e3a0c567a4c77f8016a506d5d0a95e606c81d7bbe1c6a65c1"
+  },
+  "id": "yMiUQTguxGBFVXw4",
+  "tags": []
+}
