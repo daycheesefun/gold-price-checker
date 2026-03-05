@@ -14,7 +14,7 @@
 
 📧 **邮件提醒**：条件满足时发邮件通知你
 
-![工作流截图]([https://github.com/你的用户名/仓库名/raw/main/截图文件名.png](https://github.com/daycheesefun/gold-price-checker/blob/main/%E5%B7%A5%E4%BD%9C%E6%B5%81%E6%88%AA%E5%9B%BE.png))
+![工作流截图](https://github.com/daycheesefun/gold-price-checker/blob/main/%E5%B7%A5%E4%BD%9C%E6%B5%81%E6%88%AA%E5%9B%BE.png)
 
 ## 🛠️ 准备工作（只需5分钟）
 
