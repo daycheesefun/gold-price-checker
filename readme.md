@@ -14,6 +14,8 @@
 
 📧 **邮件提醒**：条件满足时发邮件通知你
 
+![工作流截图]([https://github.com/你的用户名/仓库名/raw/main/截图文件名.png](https://github.com/daycheesefun/gold-price-checker/blob/main/%E5%B7%A5%E4%BD%9C%E6%B5%81%E6%88%AA%E5%9B%BE.png))
+
 ## 🛠️ 准备工作（只需5分钟）
 
 你需要准备：
@@ -186,4 +188,5 @@ MIT
 感谢deepseek，我全程靠它解决了所有问题。也感谢你自己坚持到了最后。这个项目证明了--**不会编程也能做出实用的自动化工具**。
 
 **如果这个项目帮到了你，请给一个 ⭐ 吧！**  
+
 有问题欢迎开 Issue，我会尽力回答。
